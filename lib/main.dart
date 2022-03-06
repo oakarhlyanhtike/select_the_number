@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:selectnumber/components/image_btn.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -44,6 +45,33 @@ class _SelectNumber extends State<SelectNumber> {
   ];
   int correctAnswer = 0;
   int score = 0;
+  SharedPreferences? prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    loadScore();
+  }
+
+  saveScore(int newScore) async {
+    // Obtain shared preferences.
+    prefs = await SharedPreferences.getInstance();
+    if (prefs != null) {
+      await prefs?.setInt('score', newScore);
+    }
+  }
+
+  loadScore() async {
+    prefs = await SharedPreferences.getInstance();
+    if (prefs != null) {
+      var myScore = prefs?.getInt('score');
+      if (myScore != null) {
+        setState(() {
+          score = myScore;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,9 +111,10 @@ class _SelectNumber extends State<SelectNumber> {
               correctAnswer: correctAnswer,
               val: val,
               onTap: (ans) {
-               setState(() {
+                setState(() {
                   score += ans;
-               });
+                  saveScore(score);
+                });
               }))
           .toList());
 }

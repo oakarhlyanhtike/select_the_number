@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 typedef ImageButtonOnTap = void Function(int score);
 
+
 class ImageButton extends StatelessWidget {
   int correctAnswer = 0;
   int val = 0;
